@@ -16,19 +16,29 @@ var getCityWeather = function(currentCityInfo){
                 var latitude = data.city.coord.lat;
                 var longitude = data.city.coord.lon;
                 var nameOfCity =data.city.name;
+
                 console.log(latitude)
                 console.log(longitude)
                 console.log(nameOfCity)
-
-                cityName.innerHTML= `<h3 class="current-city card-title">${nameOfCity}</h3>
-
-                `
+                
+                //cityName.innerHTML= `<h3 class="current-city card-title">${nameOfCity}</h3>`
+                
 
                 var secondUrl ="https://api.openweathermap.org/data/2.5/onecall?lat=" + latitude + "&lon="+ longitude + "&exclude=minutely,hourly,alert&units=imperial&appid="+ apiKey;
 
                 fetch(secondUrl).then(function(response){
                     response.json().then(function(data){
                         console.log(data)
+
+                        var date = new Date(data.current.dt *1000)
+                                const weekdays = ["Sunday","Monday","Tuesda","Wednesday","Thursday","Friday","Saturday"]
+                                var day = weekdays[date.getDay()]
+                                var dd = date.getDate()
+                                var mm = date.getMonth()
+                                var yyyy = date.getFullYear()
+                                console.log(date)
+
+                        $("#cityName").text(nameOfCity + ": " + day + "/" + mm + "/" + dd + "/" + yyyy)
 
                         displayCurrentWeather(data)
                         //calling the data in current weather
@@ -58,7 +68,7 @@ function displayCurrentWeather(data) {
 
 
 function displayForecast(data) {
-    for (var i =1; i <= 5; i++) {
+    for (var i = 1; i <= 5; i++) {
         var weatherData = {
             date: data.daily[i].dt,
             Temp: data.daily[i].temp.day,
@@ -68,13 +78,14 @@ function displayForecast(data) {
         };
     var currentDate = moent.unix(weatherData.date).format("MM/DD/YYYY");
 
-    document.getElementById(
+    document.getElementById (
         "forecast-" + i
     ).innerHTML = `<div class="card" id="day-card:> 
         <div><img src="https://openweathermap.org/img/wn/${weatherData.icon}.png"></div>
         <div class = "card-text">Temp: ${weatherData.temp}°F</div>
         <div class = "card-text">Wind: ${weatherData.wind_speed}mph</div>
-        <div class = "card-text">Humidity: ${weatherData.humidity}%</div>`
+        <div class = "card-text">Humidity: ${weatherData.humidity}%</div>
+        `
     }
 }
 
