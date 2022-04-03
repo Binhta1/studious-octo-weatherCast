@@ -1,11 +1,16 @@
-var searchBtn = document.querySelector("#searchButton")
-var searchCity = document.querySelector("#userSearch")
 var apiKey = "eb36efeec9e8db03dceda4aa497b1c1f"
 var currentWeather = document.querySelector("#currentWeather")
 var forecast = document.querySelector("#forecast")
-var cityName =document.querySelector('#cityName')
+var cityName = document.querySelector('#cityName')
 var forecastContainer = document.querySelector('#forecastContainer')
 
+// listening for search
+document.getElementById("searchButton").addEventListener("click",getCityName)
+//pulling the info inside input
+function getCityName() {
+    let city = document.getElementById("userSearch").value.trim();
+    getCityWeather(city);
+};
 
 var getCityWeather = function(currentCityInfo){
     var requestUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + currentCityInfo + "&appid="+ apiKey;
@@ -42,7 +47,7 @@ var getCityWeather = function(currentCityInfo){
 
                         displayCurrentWeather(data)
                         //calling the data in current weather
-
+                        displayForecast(data)
                     })
                 })
            })   
@@ -63,52 +68,33 @@ function displayCurrentWeather(data) {
         <div class = "card-text">Wind: ${colorBlock}">UV Index:${uvi}</div>
         </div>`;
 
-}
-
+};
 
 
 function displayForecast(data) {
+
     for (var i = 1; i <= 5; i++) {
         var weatherData = {
             date: data.daily[i].dt,
-            Temp: data.daily[i].temp.day,
+            temp: data.daily[i].temp.day,
             wind_speed: data.daily[i].wind_speed,
             humidity: data.daily[i].humidity,
-            icon: data.current.weather[0].icon
-        };
-    var currentDate = moent.unix(weatherData.date).format("MM/DD/YYYY");
+            icon: data.daily[i].weather[0].icon,
+            };
+        
+
+    var currentDate = moment.unix(weatherData.date).format("MM/DD/YYYY");
 
     document.getElementById (
         "forecast-" + i
-    ).innerHTML = `<div class="card" id="day-card:> 
-        <div><img src="https://openweathermap.org/img/wn/${weatherData.icon}.png"></div>
-        <div class = "card-text">Temp: ${weatherData.temp}°F</div>
-        <div class = "card-text">Wind: ${weatherData.wind_speed}mph</div>
-        <div class = "card-text">Humidity: ${weatherData.humidity}%</div>
-        `
+    ).innerHTML = `<div class="card" id="day-card">
+        <div class = "card-body text-center">
+            <h5 class = "card-title">${currentDate}</h5>
+            <div><img src="https://openweathermap.org/img/wn/${weatherData.icon}.png"></div>
+            <div class = "card-text">Temp: ${weatherData.temp}°F</div>
+            <div class = "card-text">Wind: ${weatherData.wind_speed}mph</div>
+            <div class = "card-text">Humidity: ${weatherData.humidity}%</div>
+        </div>
+        </div>`;
     }
-}
-
-
-
-getCityWeather('tampa')
-
-
-
-
-
-
-
-
-
-
-// for( var i = 0; i < data.length; i++){
-//           console.log(data)
-//             var cityName = document.createElement('h2');
-//             cityName.textContent = data[i].city.name;
-//             cityInfo.append(cityName)
-
-//         }
-//         });
-      
-
+    };
