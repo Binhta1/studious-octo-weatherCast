@@ -1,8 +1,29 @@
 h1 {
     text-align: center;
-    background-color: aliceblue;
 }
-h2 {
-    background-color: aliceblue;
-    
+
+.current-data.card-body {
+    background-color: antiquewhite;
+}
+div#cityName {
+    font-size: 35px;
+    font-weight: lighter;
+    color: antiquewhite;
+    text-shadow: 3px 2px black;
+    text-align: center;
+}
+.card-body.text-center {
+    background-color: beige;
+    font-size: smaller;    
+}
+
+div#cityName {
+    background: antiquewhite;
+}
+.current-data.card-body {
+    text-align: center;
+}
+p.card-text.bg-success {
+    width: max-content;
+    display: initial;
 }

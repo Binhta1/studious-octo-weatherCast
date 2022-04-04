@@ -3,9 +3,14 @@ var currentWeather = document.querySelector("#currentWeather")
 var forecast = document.querySelector("#forecast")
 var cityName = document.querySelector('#cityName')
 var forecastContainer = document.querySelector('#forecastContainer')
-
+var searchHistory = JSON.parse(localStorage.getItem("history")) || []
 // listening for search
-document.getElementById("searchButton").addEventListener("click",getCityName)
+document.getElementById("searchButton").addEventListener("click",function(){
+    getCityName()
+    searchHistory = userSearch
+})
+
+
 //pulling the info inside input
 function getCityName() {
     let city = document.getElementById("userSearch").value.trim();
@@ -25,10 +30,7 @@ var getCityWeather = function(currentCityInfo){
                 console.log(latitude)
                 console.log(longitude)
                 console.log(nameOfCity)
-                
-                //cityName.innerHTML= `<h3 class="current-city card-title">${nameOfCity}</h3>`
-                
-
+                                               
                 var secondUrl ="https://api.openweathermap.org/data/2.5/onecall?lat=" + latitude + "&lon="+ longitude + "&exclude=minutely,hourly,alert&units=imperial&appid="+ apiKey;
 
                 fetch(secondUrl).then(function(response){
@@ -58,19 +60,26 @@ var getCityWeather = function(currentCityInfo){
 function displayCurrentWeather(data) { 
     const {icon} = data.current.weather[0];
     const {temp, wind_speed, humidity, uvi} = data.current;
-    var colorBlock ="bg-danger";
+
+    var colorBlock ="";   
+    if (uvi > 7) {
+      $(colorBlock) = "bg-danger";
+    } else if (uvi > 4 && uvi < 7) {
+      colorBlock = "bg-warning";
+    } else if (uvi < 4) {
+      colorBlock = "bg-success";
+    };
 
     currentWeather.innerHTML = `<div class="current-data card-body">
         <img scr="https://openweathermap.org/img/wn/${icon}.png">
-        <div class = "card-text">Temp: ${temp}F</div>
-        <div class = "card-text">Wind: ${wind_speed}mph</div>
-        <div class = "card-text">Humidity: ${humidity}%</div>
-        <div class = "card-text">Wind: ${colorBlock}">UV Index:${uvi}</div>
+            <div class = "card-text">Temp: ${temp}F</div>
+            <div class = "card-text">Wind: ${wind_speed}mph</div>
+            <div class = "card-text">Humidity: ${humidity}%</div>
+            <p class = "card-text ${colorBlock}">UV Index:${uvi}</p>
         </div>`;
+    };
 
-};
-
-
+//function to display the 5 day forecast
 function displayForecast(data) {
 
     for (var i = 1; i <= 5; i++) {
@@ -85,6 +94,7 @@ function displayForecast(data) {
 
     var currentDate = moment.unix(weatherData.date).format("MM/DD/YYYY");
 
+    //append the 5 day into html        
     document.getElementById (
         "forecast-" + i
     ).innerHTML = `<div class="card" id="day-card">
@@ -98,3 +108,5 @@ function displayForecast(data) {
         </div>`;
     }
     };
+
+
