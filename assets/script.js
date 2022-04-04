@@ -3,11 +3,16 @@ var currentWeather = document.querySelector("#currentWeather")
 var forecast = document.querySelector("#forecast")
 var cityName = document.querySelector('#cityName')
 var forecastContainer = document.querySelector('#forecastContainer')
-var searchHistory = JSON.parse(localStorage.getItem("history")) || []
+
+var searchHistory = JSON.parse(localStorage.getItem("history"))
+
 // listening for search
 document.getElementById("searchButton").addEventListener("click",function(){
     getCityName()
-    searchHistory = userSearch
+
+     
+
+    
 })
 
 
@@ -15,6 +20,8 @@ document.getElementById("searchButton").addEventListener("click",function(){
 function getCityName() {
     let city = document.getElementById("userSearch").value.trim();
     getCityWeather(city);
+
+    localStorage.setItem("getCityName", JSON.stringify(city));
 };
 
 var getCityWeather = function(currentCityInfo){
