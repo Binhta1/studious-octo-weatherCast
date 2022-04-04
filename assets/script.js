@@ -8,23 +8,52 @@ var searchHistory = JSON.parse(localStorage.getItem("history"))
 
 // listening for search
 document.getElementById("searchButton").addEventListener("click",function(){
-    getCityName()
-
-     
-
+    getCityWeather()
     
 })
 
 
 //pulling the info inside input
-function getCityName() {
-    let city = document.getElementById("userSearch").value.trim();
-    getCityWeather(city);
+function getCityWeather() {
+    let cityInput = document.getElementById("userSearch").value.trim();
+    getOpenWeatherMapInfo(cityInput);
 
-    localStorage.setItem("getCityName", JSON.stringify(city));
 };
 
-var getCityWeather = function(currentCityInfo){
+function setSearchHistory(cityName) {
+    searchHistory = getSearchHistory()
+    if (!searchHistory.hasOwnProperty(cityName)) {
+        searchHistory[cityName] = true
+    }
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+    renderSearchHistory()
+}
+
+function getSearchHistory() {
+    let searchHistory = localStorage.getItem("searchHistory")
+
+    if (searchHistory === undefined || searchHistory === null) {
+        return {}
+    }
+    return JSON.parse(searchHistory)
+}
+
+// Adds all cities from the search history to the side of the page
+function renderSearchHistory() {
+    searchHistory = getSearchHistory()
+    let cities = Object.keys(searchHistory);
+
+    // Delete "searchHistory" div from html if it exists
+
+    
+    for (var i = 0; i < cities.length; i++) {
+        console.log('searchHistory: ' + cities[i])
+          // Append inner div to the string
+    }
+
+}
+
+var getOpenWeatherMapInfo = function(currentCityInfo){
     var requestUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + currentCityInfo + "&appid="+ apiKey;
         fetch(requestUrl).then(function(response) {
             response.json().then(function(data) {   
@@ -32,11 +61,12 @@ var getCityWeather = function(currentCityInfo){
 
                 var latitude = data.city.coord.lat;
                 var longitude = data.city.coord.lon;
-                var nameOfCity =data.city.name;
+                var nameOfCity = data.city.name;
 
                 console.log(latitude)
                 console.log(longitude)
                 console.log(nameOfCity)
+                setSearchHistory(nameOfCity)
                                                
                 var secondUrl ="https://api.openweathermap.org/data/2.5/onecall?lat=" + latitude + "&lon="+ longitude + "&exclude=minutely,hourly,alert&units=imperial&appid="+ apiKey;
 
@@ -45,7 +75,7 @@ var getCityWeather = function(currentCityInfo){
                         console.log(data)
 
                         var date = new Date(data.current.dt *1000)
-                                const weekdays = ["Sunday","Monday","Tuesda","Wednesday","Thursday","Friday","Saturday"]
+                                const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
                                 var day = weekdays[date.getDay()]
                                 var dd = date.getDate()
                                 var mm = date.getMonth()
